@@ -18,7 +18,7 @@ A plugin for [Obsidian](https://obsidian.md/) that allows you to interact with O
 
 ![Obsidian ChatGPT Plugin Demo](demo.gif)
 
-*TODO: Replace the above line with an actual GIF or screenshot demonstrating your plugin.*
+*TODO: Replace with an actual GIF.*
 
 ## Installation
 
@@ -48,13 +48,13 @@ A plugin for [Obsidian](https://obsidian.md/) that allows you to interact with O
    - Open Obsidian.
    - Go to `Settings` > `Community Plugins`.
    - Click on `Reload Plugins`.
-   - Find `ChatGPT Plugin` in the list and toggle it on.
+   - Find `AskGpt` in the list and toggle it on.
 
 ## Usage
 
 1. **Set Up Your API Key**
 
-   - Go to `Settings` > `ChatGPT Plugin Settings`.
+   - Go to `Settings` > `AskGpt Settings`.
    - Enter your OpenAI API key in the `API Key` field.
    - *Note: You can obtain an API key from [OpenAI's website](https://platform.openai.com/account/api-keys).*
 
