@@ -1,0 +1,10 @@
+{
+    "id": "my-ask-chatgpt-plugin",
+    "name": "Ask GPT",
+    "version": "0.0.1",
+    "minAppVersion": "0.12.0",
+    "description": "A plugin to interact with ChatGPT.",
+    "author": "Alfonso Grana",
+    "authorUrl": "https://about.me/agrana",
+    "isDesktopOnly": false
+}
