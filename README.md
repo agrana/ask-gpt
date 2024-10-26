@@ -4,7 +4,7 @@ Certainly! Here's a `README.md` file for your Obsidian ChatGPT plugin:
 
 # Obsidian ChatGPT Plugin
 
-A plugin for [Obsidian](https://obsidian.md/) that allows you to interact with OpenAI's ChatGPT directly from your editor. Select text in your markdown files and send it to ChatGPT to receive AI-generated responses. Customize the assistant's behavior using a system message (prefix) and integrate the responses seamlessly into your notes.
+A plugin for [Obsidian](https://obsidian.md/) that allows you to interact with OpenAI's ChatGPT directly from your editor. Select text in your markdown files and send it to ChatGPT to receive AI-generated responses. Customize the assistant's behavior using a system message and integrate the responses seamlessly into your notes.
 
 ## Features
 
@@ -68,10 +68,12 @@ A plugin for [Obsidian](https://obsidian.md/) that allows you to interact with O
    - Open a markdown file in Obsidian.
    - Select the text you want to send to ChatGPT.
    - Use the command palette (`Ctrl+P` or `Cmd+P`) and run `Send Prompt to ChatGPT`, or use the keyboard shortcut `Ctrl+G` (`Cmd+G` on Mac).
+   - Select the system message you want to use.
+
 
 4. **View the Response**
 
-   - The plugin will replace your selected text with the original prompt followed by ChatGPT's response.
+   - The plugin will insert the text response after the selected text.
 
 ## Settings
 
@@ -137,6 +139,3 @@ Contributions are welcome! If you have suggestions, bug reports, or want to cont
 
 This project is licensed under the [MIT License](LICENSE).
 
-## Todo
-
-- Add the ability to configure multiple system messages and assing shortcuts.
