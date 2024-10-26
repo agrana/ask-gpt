@@ -1,112 +1,91 @@
 import { App, Plugin, PluginSettingTab, Setting, Notice, Editor, MarkdownView } from 'obsidian';
+import { SystemMessageModal } from './SystemMessageModal'; 
+import { SystemMessage, ChatGPTSettings, DEFAULT_SETTINGS } from './types';
+import ChatGPTSettingTab  from './ChatGPTSettingTab'; // Import the ChatGPTSettingTab class
+// Import necessary modules and interfaces
 
-interface ChatGPTSettings {
-  apiKey: string;
-  prefix: string;
-}
+// Define the ChatGPTSettingTab class
 
-const DEFAULT_SETTINGS: ChatGPTSettings = {
-  apiKey: '',
-  prefix: ''
-};
-
-class ChatGPTSettingTab extends PluginSettingTab {
-  plugin: MyPlugin;
-
-  constructor(app: App, plugin: MyPlugin) {
-    super(app, plugin);
-    this.plugin = plugin;
-  }
-
-  display(): void {
-    let { containerEl } = this;
-
-    containerEl.empty();
-
-    containerEl.createEl('h2', { text: 'ChatGPT Plugin Settings' });
-
-    new Setting(containerEl)
-      .setName('API Key')
-      .setDesc('Enter your OpenAI API key')
-      .addText(text => text
-        .setPlaceholder('Enter your API key')
-        .setValue(this.plugin.settings.apiKey)
-        .onChange(async (value) => {
-          this.plugin.settings.apiKey = value;
-          await this.plugin.saveSettings();
-        }));
-
-    new Setting(containerEl)
-      .setName('Prefix')
-      .setDesc('Enter a prefix for the prompt (e.g., "Review:", "Summarize:")')
-      .addText(text => text
-        .setPlaceholder('Enter a prefix')
-        .setValue(this.plugin.settings.prefix)
-        .onChange(async (value) => {
-          this.plugin.settings.prefix = value;
-          await this.plugin.saveSettings();
-        }));
-  }
-}
 
 export default class MyPlugin extends Plugin {
   settings: ChatGPTSettings = DEFAULT_SETTINGS;
 
   async onload() {
     await this.loadSettings();
+    this.addSettingTab(new ChatGPTSettingTab(this.app, this));
 
+    // Add a single command that opens the system message selection modal
     this.addCommand({
       id: 'send-prompt-to-chatgpt',
       name: 'Send Prompt to ChatGPT',
       editorCallback: (editor: Editor, view: MarkdownView) => {
-        this.handleEditorCallback(editor, view);
+        this.showSystemMessageSelection(editor);
       },
       hotkeys: [
         {
-          modifiers: ["Mod"],
-          key: "g",
+          modifiers: ['Mod'],
+          key: 'g',
         },
       ],
     });
-
-    this.addSettingTab(new ChatGPTSettingTab(this.app, this));
   }
 
-  async handleEditorCallback(editor: Editor, view: MarkdownView) {
+  async showSystemMessageSelection(editor: Editor) {
     const prompt = editor.getSelection();
     if (!prompt) {
       new Notice('Please select some text to send to ChatGPT.');
       return;
     }
 
-    const response = await this.callChatGPT(prompt, view);
-    if (response) {
-      editor.replaceSelection(`${prompt}\n\n${response}`);
-      new Notice('Response received from ChatGPT!');
+    if (this.settings.systemMessages.length === 0) {
+      new Notice('No system messages configured. Please add one in the plugin settings.');
+      return;
+    }
+
+    const selectedSystemMessage = await this.selectSystemMessage(this.settings.systemMessages);
+
+    if (selectedSystemMessage) {
+      try {
+        const response = await this.callChatGPT(prompt, selectedSystemMessage.message);
+        editor.replaceSelection(`${prompt}\n\n${response}`);
+        new Notice('Response received from ChatGPT!');
+      } catch (error) {
+        console.error('Error calling ChatGPT:', error);
+        new Notice('Failed to get a response from ChatGPT.');
+      }
     }
   }
 
-  async callChatGPT(prompt: string, view: MarkdownView): Promise<string> {
+  async selectSystemMessage(options: SystemMessage[]): Promise<SystemMessage | null> {
+    return new Promise((resolve) => {
+      const modal = new SystemMessageModal(this.app, options, resolve);
+      modal.open();
+    });
+  }
+
+  async callChatGPT(prompt: string, systemMessage: string): Promise<string> {
     const apiKey = this.settings.apiKey;
-    const prefix = this.settings.prefix;
     const url = 'https://api.openai.com/v1/chat/completions';
 
     const headers = {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${apiKey}`
+      Authorization: `Bearer ${apiKey}`,
     };
 
     const body = JSON.stringify({
-      model: "gpt-3.5-turbo", // Use a valid model name
-      messages: [{ role: "user", content: `${prefix} ${prompt}` }],
-      max_tokens: 1024
+      model: 'gpt-3.5-turbo',
+      messages: [
+        { role: 'system', content: systemMessage },
+        { role: 'user', content: prompt },
+      ],
+      max_tokens: 1024,
     });
 
     try {
       const response = await fetch(url, {
         method: 'POST',
         headers: headers,
-        body: body
+        body: body,
       });
 
       if (!response.ok) {
@@ -117,7 +96,12 @@ export default class MyPlugin extends Plugin {
 
       const data = await response.json();
 
-      if (!data.choices || !data.choices[0] || !data.choices[0].message || !data.choices[0].message.content) {
+      if (
+        !data.choices ||
+        !data.choices[0] ||
+        !data.choices[0].message ||
+        !data.choices[0].message.content
+      ) {
         console.error('Unexpected API response format:', data);
         throw new Error('Unexpected API response format.');
       }
@@ -125,12 +109,12 @@ export default class MyPlugin extends Plugin {
       return data.choices[0].message.content.trim();
     } catch (error) {
       console.error('Error calling OpenAI API:', error);
-      throw new Error('Failed to call OpenAI API.');
+      throw error;
     }
   }
 
   onunload() {
-    console.log('unloading plugin');
+    console.log('Unloading ChatGPT plugin');
   }
 
   async loadSettings() {
