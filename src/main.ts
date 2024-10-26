@@ -1,10 +1,7 @@
 import { App, Plugin, PluginSettingTab, Setting, Notice, Editor, MarkdownView, MarkdownFileInfo } from 'obsidian';
-import { SystemMessageModal } from './SystemMessageModal'; 
+import { SystemMessageModal } from './SystemMessageModal';
 import { SystemMessage, ChatGPTSettings, DEFAULT_SETTINGS } from './types';
-import ChatGPTSettingTab  from './ChatGPTSettingTab'; // Import the ChatGPTSettingTab class
-// Import necessary modules and interfaces
-
-// Define the ChatGPTSettingTab class
+import ChatGPTSettingTab from './ChatGPTSettingTab'; // Import the ChatGPTSettingTab class
 
 
 export default class MyPlugin extends Plugin {
