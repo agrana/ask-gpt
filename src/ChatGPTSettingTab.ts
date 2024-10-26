@@ -27,6 +27,7 @@ export default class ChatGPTSettingTab extends PluginSettingTab {
             this.plugin.settings.apiKey = value;
             await this.plugin.saveSettings();
           })
+          .inputEl.type = "password"
       );
 
     containerEl.createEl('h3', { text: 'System Messages' });
