@@ -1,10 +1,10 @@
-import { App, PluginSettingTab, Setting, Plugin_2 } from 'obsidian';
+import { App, PluginSettingTab, Setting, Plugin } from 'obsidian';
 import { PluginWithSettings } from './types';
 
 export default class ChatGPTSettingTab extends PluginSettingTab {
   plugin: PluginWithSettings;
 
-  constructor(app: App, plugin: PluginWithSettings & Plugin_2) {
+  constructor(app: App, plugin: PluginWithSettings & Plugin) {
     super(app, plugin);
     this.plugin = plugin;
   }

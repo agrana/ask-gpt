@@ -1,4 +1,4 @@
-import { App, Plugin, PluginSettingTab, Setting, Notice, Editor, MarkdownView } from 'obsidian';
+import { App, Plugin, PluginSettingTab, Setting, Notice, Editor, MarkdownView, MarkdownFileInfo } from 'obsidian';
 import { SystemMessageModal } from './SystemMessageModal'; 
 import { SystemMessage, ChatGPTSettings, DEFAULT_SETTINGS } from './types';
 import ChatGPTSettingTab  from './ChatGPTSettingTab'; // Import the ChatGPTSettingTab class
@@ -18,7 +18,7 @@ export default class MyPlugin extends Plugin {
     this.addCommand({
       id: 'send-prompt-to-chatgpt',
       name: 'Send Prompt to ChatGPT',
-      editorCallback: (editor: Editor, view: MarkdownView) => {
+      editorCallback: (editor: Editor, view: MarkdownView | MarkdownFileInfo) => {
         this.showSystemMessageSelection(editor);
       },
       hotkeys: [
