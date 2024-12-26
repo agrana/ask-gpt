@@ -70,7 +70,7 @@ export default class MyPlugin extends Plugin {
     };
 
     const body = JSON.stringify({
-      model: 'gpt-3.5-turbo',
+      model: 'gpt-o1',
       messages: [
         { role: 'system', content: systemMessage },
         { role: 'user', content: prompt },
