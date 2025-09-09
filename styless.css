@@ -1,0 +1,123 @@
+/* Conversation Modal Styles */
+.conversation-header {
+  border-bottom: 1px solid var(--background-modifier-border);
+  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+}
+
+.system-message-display {
+  background: var(--background-secondary);
+  border: 1px solid var(--background-modifier-border);
+  border-radius: 4px;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.system-message-text {
+  font-style: italic;
+  color: var(--text-muted);
+  margin: 0.5rem 0 0 0;
+}
+
+.messages-container {
+  max-height: 400px;
+  overflow-y: auto;
+  border: 1px solid var(--background-modifier-border);
+  border-radius: 4px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  background: var(--background-primary);
+}
+
+.message {
+  margin-bottom: 1rem;
+  padding: 0.75rem;
+  border-radius: 4px;
+}
+
+.message-user {
+  background: var(--interactive-accent);
+  margin-left: 2rem;
+}
+
+.message-assistant {
+  background: var(--background-secondary);
+  margin-right: 2rem;
+}
+
+.message-system {
+  background: var(--background-modifier-border);
+  font-style: italic;
+  text-align: center;
+}
+
+.message-role {
+  font-weight: bold;
+  font-size: 0.8rem;
+  margin-bottom: 0.25rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.role-label {
+  color: var(--text-muted);
+}
+
+.message-content {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+.message-timestamp {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  margin-top: 0.25rem;
+}
+
+.timestamp {
+  text-align: right;
+}
+
+.input-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.message-input {
+  resize: vertical;
+  min-height: 60px;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+  border-top: 1px solid var(--background-modifier-border);
+  padding-top: 1rem;
+}
+
+/* File context styles */
+.file-context-display {
+  background: var(--background-secondary);
+  border: 1px solid var(--background-modifier-border);
+  border-radius: 4px;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.file-context-header {
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  color: var(--text-accent);
+}
+
+.file-context-content {
+  font-family: var(--font-monospace);
+  font-size: 0.9rem;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}

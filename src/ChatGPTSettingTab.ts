@@ -1,5 +1,5 @@
-import { App, PluginSettingTab, Setting, Plugin } from 'obsidian';
-import { PluginWithSettings } from './types';
+import { App, PluginSettingTab, Setting, Plugin, Notice } from 'obsidian';
+import { PluginWithSettings, Conversation } from './types';
 
 export default class ChatGPTSettingTab extends PluginSettingTab {
   plugin: PluginWithSettings;
@@ -88,5 +88,80 @@ export default class ChatGPTSettingTab extends PluginSettingTab {
           this.display();
         })
     );
+
+    // Conversations Section
+    containerEl.createEl('h3', { text: 'Conversations' });
+
+    if (this.plugin.settings.conversations.length === 0) {
+      containerEl.createEl('p', { 
+        text: 'No conversations yet. Start a conversation using the commands.',
+        cls: 'setting-item-description'
+      });
+    } else {
+      // Display conversations
+      this.plugin.settings.conversations.forEach((conversation, index) => {
+        const setting = new Setting(containerEl)
+          .setHeading()
+          .setName(`Conversation ${index + 1}: ${conversation.title}`);
+
+        // Conversation info
+        setting.addText((text) =>
+          text
+            .setPlaceholder('Conversation Title')
+            .setValue(conversation.title)
+            .onChange(async (value) => {
+              conversation.title = value;
+              await this.plugin.saveSettings();
+            })
+        );
+
+        // Message count
+        setting.addText((text) =>
+          text
+            .setValue(`${conversation.messages.length} messages`)
+            .setDisabled(true)
+        );
+
+        // Continue conversation button
+        setting.addButton((btn) =>
+          btn
+            .setButtonText('Continue')
+            .onClick(() => {
+              if ('openConversationModal' in this.plugin) {
+                (this.plugin as any).openConversationModal(conversation);
+              }
+            })
+        );
+
+        // Delete conversation button
+        setting.addExtraButton((button) =>
+          button
+            .setIcon('trash')
+            .setTooltip('Delete Conversation')
+            .onClick(async () => {
+              this.plugin.settings.conversations.splice(index, 1);
+              if (this.plugin.settings.activeConversationId === conversation.id) {
+                this.plugin.settings.activeConversationId = null;
+              }
+              await this.plugin.saveSettings();
+              this.display();
+            })
+        );
+      });
+
+      // Clear all conversations
+      new Setting(containerEl).addButton((button) =>
+        button
+          .setButtonText('Clear All Conversations')
+          .setWarning()
+          .onClick(async () => {
+            this.plugin.settings.conversations = [];
+            this.plugin.settings.activeConversationId = null;
+            await this.plugin.saveSettings();
+            this.display();
+            new Notice('All conversations cleared.');
+          })
+      );
+    }
   }
 }
