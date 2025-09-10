@@ -80,7 +80,8 @@ export class ConversationModal extends Modal {
     textArea.inputEl.addClass('message-input');
 
     // Send button
-    const sendButton = new ButtonComponent(inputContainer)
+    const sendButtonContainer = inputContainer.createDiv('send-button-container');
+    const sendButton = new ButtonComponent(sendButtonContainer)
       .setButtonText('Send')
       .setCta()
       .onClick(async () => {
