@@ -1,4 +1,4 @@
-import { App, Modal, Setting, TextAreaComponent, ButtonComponent } from 'obsidian';
+import { App, Modal, Setting, TextAreaComponent, ButtonComponent, Notice } from 'obsidian';
 import { Conversation, ChatMessage, SystemMessage } from './types';
 
 export class ConversationModal extends Modal {
@@ -70,27 +70,29 @@ export class ConversationModal extends Modal {
 
     const textArea = new TextAreaComponent(inputContainer)
       .setPlaceholder('Type your message here...')
-      .setValue('')
-      .onValueChange((value) => {
-        // Store the value for sending
-        this.currentMessage = value;
-      });
+      .setValue('');
+    
+    textArea.inputEl.addEventListener('input', (e) => {
+      this.currentMessage = (e.target as HTMLTextAreaElement).value;
+    });
 
     textArea.inputEl.rows = 3;
     textArea.inputEl.addClass('message-input');
 
     // Send button
     const sendButtonContainer = inputContainer.createDiv('send-button-container');
-    const sendButton = new ButtonComponent(sendButtonContainer)
-      .setButtonText('Send')
-      .setCta()
-      .onClick(async () => {
-        if (this.currentMessage.trim() && !this.isWaitingForResponse) {
-          await this.sendMessage(this.currentMessage.trim());
-          textArea.setValue('');
-          this.currentMessage = '';
-        }
-      });
+    const sendButton = sendButtonContainer.createEl('button', {
+      text: 'Send',
+      cls: 'mod-cta'
+    });
+    
+    sendButton.addEventListener('click', async () => {
+      if (this.currentMessage.trim() && !this.isWaitingForResponse) {
+        await this.sendMessage(this.currentMessage.trim());
+        textArea.setValue('');
+        this.currentMessage = '';
+      }
+    });
 
     // Action buttons
     const actionContainer = contentEl.createDiv('action-buttons');
@@ -116,8 +118,8 @@ export class ConversationModal extends Modal {
   }
 
   private currentMessage: string = '';
-  private textArea: TextAreaComponent;
-  private sendButton: ButtonComponent;
+  private textArea!: TextAreaComponent;
+  private sendButton!: HTMLButtonElement;
 
   private renderMessages(container: HTMLElement) {
     container.empty();
@@ -149,8 +151,8 @@ export class ConversationModal extends Modal {
     }
 
     this.isWaitingForResponse = true;
-    this.sendButton.setButtonText('Sending...');
-    this.sendButton.setDisabled(true);
+    this.sendButton.textContent = 'Sending...';
+    this.sendButton.disabled = true;
 
     // Add user message to conversation
     const userMessage: ChatMessage = {
@@ -171,8 +173,8 @@ export class ConversationModal extends Modal {
       new Notice('Failed to send message. Please try again.');
     } finally {
       this.isWaitingForResponse = false;
-      this.sendButton.setButtonText('Send');
-      this.sendButton.setDisabled(false);
+      this.sendButton.textContent = 'Send';
+      this.sendButton.disabled = false;
     }
   }
 

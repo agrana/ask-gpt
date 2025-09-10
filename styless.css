@@ -96,6 +96,19 @@
   margin-top: 0.5rem;
 }
 
+.send-button-container button {
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.send-button-container button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 .action-buttons {
   display: flex;
   gap: 0.5rem;
